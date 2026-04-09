@@ -1,0 +1,9 @@
+django>=4.2
+djangorestframework
+djangorestframework-simplejwt
+django-filter
+pillow
+python-decouple
+psycopg2-binary
+django-cors-headers
+drf-spectacular
