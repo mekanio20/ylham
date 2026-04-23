@@ -33,7 +33,7 @@ Ulanyjylar:
 - Tailwind CSS
 
 ### Backend
-- DJANGO
+- Nodejs (Expressjs)
 - (sqlite3)
 - PostgreSQL
 
@@ -63,22 +63,11 @@ cd ylham/
 ```
 cd backend/
 
-# virtualenv döret
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
+# paketleri ýüklemek
+yarn install
 
-# Gerekli paketleri ýükle
-pip install -r requirements.txt
-
-# Database döret
-python manage.py migrate
-
-# Superuser döret (optional)
-python manage.py createsuperuser
-
-# Backend'i başlat
-python manage.py runserver
+#işe goýbermek
+yarn run dev
 ```
 
 ---
