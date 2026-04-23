@@ -88,6 +88,23 @@
           </div>
         </div>
 
+        <div v-if="currentStep === 1" class="flex flex-col space-y-2 mt-4">
+          <div class="flex items-center gap-3 rounded-xl">
+            <button type="button" @click="form.terms = !form.terms"
+              :class="['w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all shrink-0 mt-0.5', form.terms ? 'bg-[#1C1C1E] border-[#1C1C1E]' : 'bg-white border border-[#1C1C1E] hover:border-[#9A9A8A]']">
+              <v-icon v-if="form.terms" size="12" icon="mdi-check" class="text-white" />
+            </button>
+            <p class="text-xs text-[#6B6B5A] leading-relaxed font-dm">
+              <a href="/terms" target="_blank" class="text-[#A8896C] hover:underline">Ulanyjy Şertlerini</a>
+              we
+              <a href="/privacy" target="_blank" class="text-[#A8896C] hover:underline">Gizlinlik
+                Syýasatyny</a>
+              okadym, kabul edýärin.
+            </p>
+          </div>
+          <p v-if="fieldError.terms" class="pl-4 text-xs text-[#C0392B] font-dm">{{ fieldError.terms }}</p>
+        </div>
+
         <!-- ══ STEP 2 — OTP ══ -->
         <div v-if="currentStep === 2" class="space-y-4">
           <!-- OTP Inputs -->
@@ -116,23 +133,6 @@
           </div>
         </div>
 
-        <div v-if="currentStep === 1" class="flex flex-col space-y-2 mt-4">
-          <div class="flex items-center gap-3 rounded-xl">
-            <button type="button" @click="form.terms = !form.terms"
-              :class="['w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all shrink-0 mt-0.5', form.terms ? 'bg-[#1C1C1E] border-[#1C1C1E]' : 'bg-white border border-[#1C1C1E] hover:border-[#9A9A8A]']">
-              <v-icon v-if="form.terms" size="12" icon="mdi-check" class="text-white" />
-            </button>
-            <p class="text-xs text-[#6B6B5A] leading-relaxed font-dm">
-              <a href="/terms" target="_blank" class="text-[#A8896C] hover:underline">Ulanyjy Şertlerini</a>
-              we
-              <a href="/privacy" target="_blank" class="text-[#A8896C] hover:underline">Gizlinlik
-                Syýasatyny</a>
-              okadym, kabul edýärin.
-            </p>
-          </div>
-          <p v-if="fieldError.terms" class="pl-4 text-xs text-[#C0392B] font-dm">{{ fieldError.terms }}</p>
-        </div>
-
         <!-- ══ Buttons ══ -->
         <div class="flex gap-3 mt-7">
           <!-- Prev button -->
@@ -155,24 +155,11 @@
 
           <!-- Next button -->
           <button v-else-if="currentStep === 1" @click="nextStep" :disabled="authStore.loading"
-            class="flex-1 py-3 rounded-xl bg-[#1C1C1E] text-[#F5F0E8] text-sm hover:bg-[#3A3A2E] active:scale-[0.99] transition-all font-dm">
+            class="flex-1 py-3 rounded-xl text-[#F5F0E8] text-sm transition-all font-dm"
+            :class="[authStore.loading ? 'bg-[#3A3A2E] cursor-not-allowed' : 'bg-[#1C1C1E] hover:bg-[#3A3A2E] active:scale-[0.99] cursor-pointer']">
             {{ authStore.loading ? 'Ýüklenýär...' : 'Dowam et →' }}
           </button>
         </div>
-
-        <!-- Divider + Google (only step 1) -->
-        <!-- <template v-if="currentStep === 1">
-          <div class="flex items-center gap-4 my-6">
-            <div class="flex-1 h-px bg-[#E5DFD5]"></div>
-            <span class="text-xs text-[#B0A898] font-dm">ýa-da</span>
-            <div class="flex-1 h-px bg-[#E5DFD5]"></div>
-          </div>
-          <button
-            class="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-[#D9D0C4] bg-white text-[#1C1C1E] text-sm hover:bg-[#F5F2EC] hover:border-[#9A9A8A] transition-all font-dm font-medium">
-            <google-icon :size="18" />
-            Google bilen hasap aç
-          </button>
-        </template> -->
 
       </div>
     </div>
@@ -182,21 +169,21 @@
 <script setup>
 const router = useRouter()
 const authStore = useAuthStore()
-const currentStep = ref(Number(sessionStorage.getItem('step')) || 1)
 const errorMsg = ref('')
 const successMsg = ref('')
 const showPassword = ref(false)
+const currentStep = ref(Number(sessionStorage.getItem('step')) || 1)
 
 const stepLabels = ['Hasap maglumatlary', 'E-poçta tassyklama']
 const stepTitles = ['Hasabyňyzy dörediň', 'Kodyny giriziň']
 
 // ── Form ──
-const form = ref({
+const form = reactive(sessionStorage.getItem('form') ? JSON.parse(sessionStorage.getItem('form')) : {
   email: '', password: '', confirmPassword: '',
   terms: false,
 })
 
-const fieldError = ref({
+const fieldError = reactive({
   email: '', password: '', confirmPassword: '',
   terms: '',
 })
@@ -211,7 +198,7 @@ let cooldownTimer = null
 const otpValue = computed(() => otp.value.join(''))
 
 const maskedEmail = computed(() => {
-  const email = form.value.email || sessionStorage.getItem('email')
+  const email = form.email
   if (!email) return
   const [local, domain] = email?.split('@')
   if (!domain) return email
@@ -251,23 +238,17 @@ const handleVerifyOtp = async () => {
   errorMsg.value = ''
   successMsg.value = ''
   otpHasError.value = false
-
-  const response = await authStore.verifyOtp({ email: form.value.email, code: otpValue.value })
-  if (response.status === 201) {
+  const response = await authStore.verifyOtp({ email: form.email, code: otpValue.value, purpose: 'registration' })
+  if (response.status === 200) {  
     successMsg.value = 'E-poçta tassyklandy!'
     sessionStorage.clear()
     setTimeout(() => {
       router.push({ name: "Home" })
     }, 1000);
   }
+  
   else if (response.status >= 400) {
-    otpHasError.value = true
-    if (response.data?.email) {
-      errorMsg.value = response.data.email[0]
-    }
-    else if (response.data?.code) {
-      errorMsg.value = response.data.code[0]
-    }
+    errorMsg.value = response.msg
     return
   }
 }
@@ -277,9 +258,9 @@ const handleResend = async () => {
   successMsg.value = ''
   errorMsg.value = ''
   try {
-    const response = await authStore.sendOtp({ email: form.value.email, password: form.value.password })
+    const response = await authStore.register({ email: form.email, password: form.password, termsAccepted: form.terms, purpose: 'registration' })
     if (response.status >= 400) {
-      errorMsg.value = response.data.email[0]
+      errorMsg.value = response.data.msg
       return
     }
     successMsg.value = 'Kod täzeden ugradyldy!'
@@ -300,7 +281,7 @@ const startCooldown = (seconds) => {
 
 // ── Password Strength ──
 const passwordStrength = computed(() => {
-  const p = form.value.password
+  const p = form.password
   if (!p) return 0
   let score = 0
   if (p.length >= 8) score++
@@ -322,15 +303,15 @@ const strengthLabel = computed(() =>
 // ── Input class helper ──
 const inputClass = (field) => [
   'w-full px-10 py-3 rounded-xl text-sm text-[#1C1C1E] placeholder-[#C8C0B0] outline-none transition-all border-2 font-dm',
-  fieldError.value[field]
+  fieldError[field]
     ? 'bg-[#FFF8F8] border-[#F5C6C6] focus:border-[#C0392B]'
     : 'bg-[#F0EBE1] border-transparent focus:border-[#A8896C]'
 ]
 
 // ── Validation ──
 const validateField = (field) => {
-  const v = form.value
-  const e = fieldError.value
+  const v = form
+  const e = fieldError
   if (field === 'email') {
     e.email = !v.email ? 'E-poçta hökmany'
       : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email) ? 'Dogry e-poçta giriziň' : ''
@@ -349,27 +330,31 @@ const validateStep = (step) => {
   errorMsg.value = ''
   if (step === 1) {
     validateField('email'); validateField('password'); validateField('confirmPassword')
-    if (!form.value.terms) fieldError.value.terms = 'Dowam etmek üçin şertleri kabul etmelisiňiz'
-    return !fieldError.value.email && !fieldError.value.password && !fieldError.value.confirmPassword && form.value.terms
+    if (!form.terms) fieldError.terms = 'Dowam etmek üçin şertleri kabul etmelisiňiz'
+    return !fieldError.email && !fieldError.password && !fieldError.confirmPassword && form.terms
   }
   return true
 }
 
 const nextStep = async () => {
   if (!validateStep(currentStep.value)) return
-  if (currentStep.value === 1) {
-    const response = await authStore.sendOtp({ email: form.value.email, password: form.value.password })
-    if (response.status >= 400) {
-      errorMsg.value = response.data.email[0]
-      return
+  try {
+    if (currentStep.value === 1) {
+      const response = await authStore.register({ email: form.email, password: form.password, termsAccepted: form.terms })
+      if (response.status >= 400) {
+        errorMsg.value = response.data.msg
+        return
+      }
+      startCooldown(60)
     }
-    startCooldown(60)
-  }
-  currentStep.value++
-  sessionStorage.setItem('step', currentStep.value)
-  sessionStorage.setItem('email', form.value.email)
-  if (currentStep.value === 2) {
-    nextTick(() => otpInputs.value[0]?.focus())
+    currentStep.value++
+    sessionStorage.setItem('step', currentStep.value)
+    sessionStorage.setItem('form', JSON.stringify(form))
+    if (currentStep.value === 2) {
+      nextTick(() => otpInputs.value[0]?.focus())
+    }
+  } catch (error) {
+    console.error('Registration error:', error)
   }
 }
 
@@ -383,6 +368,7 @@ const prevStep = () => {
     resendCooldown.value = 0
   }
   currentStep.value--
+  sessionStorage.setItem('step', currentStep.value)
 }
 
 onUnmounted(() => clearInterval(cooldownTimer))

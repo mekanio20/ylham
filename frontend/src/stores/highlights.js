@@ -8,7 +8,7 @@ export const useHighlightsStore = defineStore("highlights", {
     loading: false,
   }),
   getters: {
-    dailyPoem: (state) => state.highlights.find((item) => item.rank === 1)?.poem
+    dailyPoem: (state) => state.highlights?.find((item) => item.rank === 1)?.poem
   },
   actions: {
     // GET

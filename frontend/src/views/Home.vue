@@ -97,8 +97,8 @@
           </div>
         </div>
 
-        <!-- Sağ Sidebar -->
-        <aside class="lg:w-72 shrink-0">
+        <!-- Right Sidebar -->
+        <aside class="lg:w-80 shrink-0">
           <div class="lg:sticky lg:top-20 space-y-8">
 
             <!-- Kategoriýalar -->
@@ -124,51 +124,7 @@
             <!-- Divider -->
             <div class="border-t border-[#EAE5DC]"></div>
 
-            <!-- Günün Şairi -->
-            <div>
-              <h3 class="text-xs font-semibold text-[#1C1C1E] mb-4 tracking-widest uppercase flex items-center gap-1.5 font-dm">
-                <v-icon size="13" icon="mdi-star-four-points" class="text-[#A8896C]" />
-                Günün Şairi
-              </h3>
-              <div class="flex items-start gap-3">
-                <img :src="poetOfDay.avatar" :alt="poetOfDay.name" class="w-11 h-11 rounded-full ring-1 ring-[#A8896C] ring-offset-2 ring-offset-[#FAFAF7]" />
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-[#1C1C1E] font-dm">{{ poetOfDay.name }}</p>
-                  <p class="text-xs text-[#9A9A8A] mb-2 font-dm">{{ poetOfDay.poems }} Goşgy</p>
-                  <p class="text-sm text-[#6B6050] leading-relaxed font-garamond italic text-[15px]">
-                    "{{ poetOfDay.quote }}"
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Divider -->
-            <div class="border-t border-[#EAE5DC]"></div>
-
-            <!-- Trend Goşgyler -->
-            <div>
-              <h3 class="text-xs font-semibold text-[#1C1C1E] mb-5 tracking-widest uppercase flex items-center gap-1.5 font-dm">
-                <v-icon size="13" icon="mdi-fire" class="text-[#A8896C]" />
-                Trend
-              </h3>
-              <div class="space-y-5">
-                <div v-for="(item, idx) in trending" :key="item.id" class="flex gap-3 group cursor-pointer">
-                  <span class="text-2xl font-bold text-[#E8E3D9] tabular-nums leading-none mt-0.5 shrink-0 w-7 font-garamond">
-                    {{ String(idx + 1).padStart(2, '0') }}
-                  </span>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-1.5 mb-1">
-                      <img :src="item.avatar" :alt="item.author" class="w-4 h-4 rounded-full" />
-                      <span class="text-xs text-[#A0988A] font-dm">{{ item.author }} · {{ item.date }}</span>
-                    </div>
-                    <router-link :to="{ name: 'PoemDetail', params: { id: item.id } }"
-                      class="text-sm text-[#2A2A1E] group-hover:text-[#A8896C] transition-colors line-clamp-2 leading-snug font-garamond text-[15px]">
-                      {{ item.title }}
-                    </router-link>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PoetsList :poets="poets" />
 
           </div>
         </aside>
@@ -181,6 +137,7 @@
 import { formatDateTk } from '@/composables/useFormat'
 const highlightStore = useHighlightsStore()
 const categoryStore = useCategoryStore()
+const poetStore = usePoetStore()
 const poemStore = usePoemStore()
 const activeTab = ref('newest')
 const activeCategory = ref(null)
@@ -194,51 +151,30 @@ const tabList = ref([
   { id: 'admin_liked', label: 'Adminiň halanlary' },
 ])
 
-const poetOfDay = ref({
-  name: 'Leyla Narin',
-  poems: 43,
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=leyla99',
-  quote: 'Kelimeler, ruhun bıraktığı izlerdir.',
-})
-
-const trending = ref([
-  {
-    id: 1,
-    title: 'Gece Yarısı Şehri',
-    author: 'Leyla Narin',
-    date: '8 Mar',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=leyla99',
-    bg_image: '/poem_images/dag.webp'
-  },
-  {
-    id: 3,
-    title: 'Hafıza Kırıkları',
-    author: 'Can Demirci',
-    date: '5 Mar',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=can3',
-    bg_image: '/poem_images/dag.webp'
-  },
-  {
-    id: 2,
-    title: 'Deniz Kenarında Bir Öğle',
-    author: 'Selin Çelik',
-    date: '6 Mar',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=selin2',
-    bg_image: '/poem_images/dag.webp'
-  },
-  {
-    id: 4,
-    title: 'Sessiz Şehir',
-    author: 'Naz Kaya',
-    date: '4 Mar',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=naz4',
-    bg_image: '/poem_images/dag.webp'
-  },
+const poets = ref([
+  { id: 1, name: 'Magtymguly Pyragy', avatar: '/poet_images/default.webp', isOnline: true },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
+  { id: 2, name: 'Mollanepes', avatar: '/poet_images/default.webp', isOnline: false },
 ])
 
 onMounted(async () => {
   await poemStore.fetchPoems({ ordering: '-created_at' })
   await categoryStore.fetchCategories()
   await highlightStore.fetchHighlights({ period: 'daily' })
+  await poetStore.fetchPoets({ ordering: '-date_joined' })
 })
 </script>

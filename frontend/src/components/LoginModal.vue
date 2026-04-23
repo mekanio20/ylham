@@ -151,7 +151,7 @@ const handleLogin = async () => {
 
   errorMsg.value = ''
 
-  const response = await authStore.login({ login: form.value.email, password: form.value.password })
+  const response = await authStore.login({ email: form.value.email, password: form.value.password })
   if (response.status >= 400) {
     errorMsg.value = response.data.non_field_errors[0]
     return

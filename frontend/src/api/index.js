@@ -70,7 +70,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await plainAxios.post("auth/token/refresh/", {
+        const { data } = await plainAxios.post("auth/refresh/", {
           refresh: getRefreshToken() || "",
         });
 

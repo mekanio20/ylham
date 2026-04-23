@@ -117,16 +117,12 @@ const validateField = (field) => {
 const handleLogin = async () => {
   validateField('email')
   validateField('password')
-  if (fieldError.value.email || fieldError.value.password) return
-
   errorMsg.value = ''
-
-  const response = await authStore.login({ login: form.value.email, password: form.value.password })
+  const response = await authStore.login({ email: form.value.email, password: form.value.password })
   if (response.status >= 400) {
-    errorMsg.value = response.data.non_field_errors[0]
+    errorMsg.value = response.data.msg
     return
   }
-
   router.push({ name: "Home" })
 }
 </script>

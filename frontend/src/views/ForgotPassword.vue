@@ -4,7 +4,7 @@
             <div class="w-full max-w-sm mx-auto">
 
                 <!-- Back Button -->
-                <router-link to="/login"
+                <router-link v-if="step !== 3" to="/login"
                     class="inline-flex items-center gap-2 text-xs tracking-widest uppercase text-[#A8896C] hover:text-[#6B6B5A] transition-colors mb-4 font-dm">
                     <v-icon size="14" icon="mdi-arrow-left" />
                     Yzyna
@@ -284,14 +284,21 @@ const startCooldown = () => {
 
 // Step handlers
 const handleSendCode = async () => {
+    const data = JSON.parse(sessionStorage.getItem('temp_reset_data')) || form.value
+    form.value = {
+        email: data.email || '',
+        password: data.new_password || '',
+        confirmPassword: data.new_password_confirm || ''
+    }
     validateEmail()
     validatePassword()
     validateConfirm()
     if (fieldError.value.email) return
     if (fieldError.value.password || fieldError.value.confirmPassword) return
     errorMsg.value = ''
+    
     try {
-        await authStore.sendOtp({ email: form.value.email }, 'reset')
+        await authStore.resetPassword({ email: form.value.email, password: form.value.password })
         sessionStorage.setItem('temp_reset_data', JSON.stringify({
             email: form.value.email,
             new_password: form.value.password,
@@ -310,11 +317,12 @@ const handleVerifyOtp = async () => {
     errorMsg.value = ''
     const temp_reset_data = JSON.parse(sessionStorage.getItem('temp_reset_data'))
     temp_reset_data.code = otp.value.join('')
-    const response = await authStore.resetPassword(temp_reset_data)
+    temp_reset_data.purpose = 'password_reset'
+    const response = await authStore.verifyOtp(temp_reset_data)
     if (response.status === 200) {
         sessionStorage.clear()
         step.value = 3
-    } else errorMsg.value = response.data?.code[0] || 'Ýalňyşlyk ýüze çykdy!'
+    } else errorMsg.value = response.data.msg
 }
 </script>
 

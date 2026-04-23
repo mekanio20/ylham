@@ -24,13 +24,14 @@ export const useAuthStore = defineStore("auth", {
     async login(data) {
       this.loading = true;
       try {
-        const response = await api.post("auth/login/", data);
+        const result = await api.post("auth/login/", data);
+        const response = result.data
         setUser(response.data.user);
-        setAccessToken(response.data.tokens.access);
-        setRefreshToken(response.data.tokens.refresh);
+        setAccessToken(response.data.access);
+        setRefreshToken(response.data.refresh);
         this.user = response.data.user;
-        this.access_token = response.data.tokens.access;
-        this.refresh_token = response.data.tokens.refresh;
+        this.access_token = response.data.access;
+        this.refresh_token = response.data.refresh;
         return response;
       } catch (error) {
         this.error = error;
@@ -42,13 +43,14 @@ export const useAuthStore = defineStore("auth", {
     async verifyOtp(data) {
       this.loading = true;
       try {
-        const response = await api.post("auth/register/verify/", data);
+        const result = await api.post("auth/verify/", data);
+        const response = result.data
         setUser(response.data.user);
-        setAccessToken(response.data.tokens.access);
-        setRefreshToken(response.data.tokens.refresh);
+        setAccessToken(response.data.access);
+        setRefreshToken(response.data.refresh);
         this.user = response.data.user;
-        this.access_token = response.data.tokens.access;
-        this.refresh_token = response.data.tokens.refresh;
+        this.access_token = response.data.access;
+        this.refresh_token = response.data.refresh;
         return response;
       } catch (error) {
         this.error = error;
@@ -57,13 +59,11 @@ export const useAuthStore = defineStore("auth", {
         this.loading = false;
       }
     },
-    async sendOtp(data, purpose = "register") {
+    async register(payload) {
       this.loading = true;
       try {
-        let url = "auth/register/initiate/"
-        if (purpose === 'reset') url = "auth/forgot-password/"
-        const otp = await api.post(url, data);
-        return otp;
+        const data = await api.post("auth/register/", payload);
+        return data;
       } catch (error) {
         this.error = error;
         return error
@@ -74,7 +74,7 @@ export const useAuthStore = defineStore("auth", {
     async resetPassword(data) {
       this.loading = true;
       try {
-        const response = await api.post("auth/forgot-password/verify/", data);
+        const response = await api.post("auth/reset/", data);
         return response;
       } catch (error) {
         this.error = error;
