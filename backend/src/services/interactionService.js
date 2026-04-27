@@ -1,5 +1,5 @@
-const { Poem, PoemLike, Comment, CommentLike } = require("../models");
-const Response = require("../utils/response");
+import { Poem, PoemLike, Comment, CommentLike } from "../models/index.js";
+import Response from "../utils/response.js";
 
 const togglePoemLike = async (poemId, userId) => {
   const poem = await Poem.findByPk(poemId);
@@ -34,4 +34,4 @@ const toggleCommentLike = async (commentId, userId) => {
   return Response.Success("Comment liked successfully.", { liked: true });
 };
 
-module.exports = { togglePoemLike, listComments, createComment, toggleCommentLike };
+export { togglePoemLike, listComments, createComment, toggleCommentLike };

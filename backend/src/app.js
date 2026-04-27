@@ -1,12 +1,12 @@
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
-const apiRoutes = require("./routes");
+import express from 'express'
+import cors from 'cors'
+import morgan from 'morgan';
+import apiRoutes from './routes/index.js'
 
 const app = express();
 
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json({}));
 app.use(morgan("dev"));
 
 app.get("/healthz", (_req, res) => res.json({ ok: true }));
@@ -17,4 +17,4 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ detail: "Server error." });
 });
 
-module.exports = app;
+export default app;

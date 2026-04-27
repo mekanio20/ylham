@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+import jwt from 'jsonwebtoken'
+import { User } from '../models/index.js'
 
-const requireAuth = async (req, res, next) => {
+export const requireAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
@@ -16,16 +16,14 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
-const requireAdmin = (req, res, next) => {
+export const requireAdmin = (req, res, next) => {
   if (!req.user?.isStaff)
     return res.status(403).json({ detail: "Admin only." });
   return next();
 };
 
-const requireNotBanned = (req, res, next) => {
+export const requireNotBanned = (req, res, next) => {
   if (req.user?.isBanned)
     return res.status(403).json({ detail: "User is banned." });
   return next();
 };
-
-module.exports = { requireAuth, requireAdmin, requireNotBanned };

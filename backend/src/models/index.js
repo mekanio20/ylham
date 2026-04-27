@@ -1,7 +1,7 @@
-const { DataTypes, Op } = require("sequelize");
-const sequelize = require("../config/database");
+import { DataTypes, Op, Sequelize } from "sequelize";
+import { DB } from "../config/database.js";
 
-const User = sequelize.define("User", {
+const User = DB.define("User", {
   username: { type: DataTypes.STRING(50), allowNull: false, unique: true },
   email: { type: DataTypes.STRING(255), allowNull: false, unique: true },
   password: { type: DataTypes.STRING(255), allowNull: false },
@@ -11,7 +11,7 @@ const User = sequelize.define("User", {
   termsAccepted: { type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false },
 });
 
-const PoetProfile = sequelize.define("PoetProfile", {
+const PoetProfile = DB.define("PoetProfile", {
   firstName: DataTypes.STRING(64),
   lastName: DataTypes.STRING(64),
   bio: DataTypes.TEXT,
@@ -23,7 +23,7 @@ const PoetProfile = sequelize.define("PoetProfile", {
   isPrivate: { type: DataTypes.BOOLEAN, defaultValue: false },
 });
 
-const EmailVerification = sequelize.define("EmailVerification", {
+const EmailVerification = DB.define("EmailVerification", {
   email: { type: DataTypes.STRING(255), unique: true },
   passwordHash: { type: DataTypes.STRING(255), allowNull: false },
   code: { type: DataTypes.STRING(6), allowNull: false },
@@ -32,15 +32,15 @@ const EmailVerification = sequelize.define("EmailVerification", {
   expiresAt: { type: DataTypes.DATE, allowNull: false },
 });
 
-const Category = sequelize.define("Category", {
+const Category = DB.define("Category", {
   name: { type: DataTypes.STRING(128), unique: true, allowNull: false },
   slug: { type: DataTypes.STRING(140), unique: true, allowNull: false },
 });
 
-const Poem = sequelize.define("Poem", {
+const Poem = DB.define("Poem", {
   title: { type: DataTypes.STRING(255), allowNull: false },
   content: { type: DataTypes.TEXT, allowNull: false },
-  tags: { type: DataTypes.TEXT, defaultValue: "" },
+  tags: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [""] },
   backgroundImage: { type: DataTypes.STRING(64), defaultValue: "none" },
   backgroundMusic: { type: DataTypes.STRING(64), defaultValue: "none" },
   likeCount: { type: DataTypes.INTEGER, defaultValue: 0 },
@@ -48,30 +48,30 @@ const Poem = sequelize.define("Poem", {
   viewCount: { type: DataTypes.INTEGER, defaultValue: 0 },
   poemNote: { type: DataTypes.TEXT },
   commentPermission: { type: DataTypes.BOOLEAN, defaultValue: true },
-  visibility: { type: DataTypes.STRING(32), defaultValue: "public" },
+  visibility: { type: DataTypes.ENUM("public", "followers", "private"), defaultValue: "public" },
   isDraft: { type: DataTypes.BOOLEAN, defaultValue: false },
   approve: { type: DataTypes.BOOLEAN, defaultValue: false },
   isDeleted: { type: DataTypes.BOOLEAN, defaultValue: false },
   deletedAt: { type: DataTypes.DATE },
 });
 
-const PoemView = sequelize.define("PoemView", {
+const PoemView = DB.define("PoemView", {
   ipAddress: DataTypes.STRING(64),
   viewedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 });
 
-const PoemLike = sequelize.define("PoemLike", {});
+const PoemLike = DB.define("PoemLike", {});
 
-const Comment = sequelize.define("Comment", {
+const Comment = DB.define("Comment", {
   content: { type: DataTypes.TEXT, allowNull: false },
   likeCount: { type: DataTypes.INTEGER, defaultValue: 0 },
   isDeleted: { type: DataTypes.BOOLEAN, defaultValue: false },
   deletedAt: DataTypes.DATE,
 });
 
-const CommentLike = sequelize.define("CommentLike", {});
+const CommentLike = DB.define("CommentLike", {});
 
-const Notification = sequelize.define("Notification", {
+const Notification = DB.define("Notification", {
   notificationType: {
     type: DataTypes.ENUM("like", "comment", "follower", "system"),
     defaultValue: "system",
@@ -80,7 +80,7 @@ const Notification = sequelize.define("Notification", {
   isRead: { type: DataTypes.BOOLEAN, defaultValue: false },
 });
 
-const Highlight = sequelize.define("Highlight", {
+const Highlight = DB.define("Highlight", {
   period: {
     type: DataTypes.ENUM("daily", "weekly", "monthly", "yearly"),
     allowNull: false,
@@ -141,15 +141,10 @@ Comment.addHook("afterDestroy", async (comment) => {
   await Poem.decrement("commentCount", { by: 1, where: { id: comment.poemId } });
 });
 
-const ensureDb = async () => {
-  await sequelize.authenticate();
-  await sequelize.sync({});
-};
-
-module.exports = {
+export {
   Op,
-  sequelize,
-  ensureDb,
+  DB,
+  Sequelize,
   User,
   PoetProfile,
   EmailVerification,

@@ -1,10 +1,12 @@
-const router = require("express").Router();
-const categoryController = require("../controllers/categoryController");
-const { createCategoryBody } = require("../validators/categoryValidators");
-const validate = require("../middlewares/validate");
-const { requireAuth, requireAdmin } = require("../middlewares/auth");
+import { Router } from 'express';
+import validate from '../middlewares/validate.js';
+import categoryController from '../controllers/categoryController.js'
+import { createCategoryBody } from '../validators/categoryValidators.js'
+import { requireAuth, requireAdmin } from '../middlewares/auth.js'
+
+const router = Router()
 
 router.get("/", categoryController.listCategories);
 router.post("/", requireAuth, requireAdmin, validate({ body: createCategoryBody }), categoryController.createCategory);
 
-module.exports = router;
+export default router

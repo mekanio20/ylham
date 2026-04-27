@@ -1,5 +1,5 @@
-const slugify = require("slugify");
-const { Category } = require("../models");
+import slugify from "slugify";
+import { Category } from "../models/index.js";
 
 const listCategories = async () => {
   const rows = await Category.findAll({ order: [["name", "ASC"]] });
@@ -13,4 +13,4 @@ const createCategory = async (nameInput) => {
   return { status: 201, body: category };
 };
 
-module.exports = { listCategories, createCategory };
+export { listCategories, createCategory };

@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from 'joi'
 
 const poemIdParam = Joi.object({
   poemId: Joi.number().integer().positive().required(),
@@ -12,4 +12,6 @@ const createCommentBody = Joi.object({
   content: Joi.string().min(1).max(3000).required(),
 });
 
-module.exports = { poemIdParam, commentIdParam, createCommentBody };
+export { poemIdParam, commentIdParam, createCommentBody };
+
+export default { poemIdParam, commentIdParam, createCommentBody };

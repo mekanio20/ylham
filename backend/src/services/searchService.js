@@ -1,5 +1,5 @@
-const { Op, Poem, User } = require("../models");
-const Response = require("../utils/response");
+import { Op, Poem, User } from '../models/index.js'
+import Response from '../utils/response.js'
 
 const searchPoems = async (q = "") => {
   const rows = await Poem.findAll({
@@ -24,4 +24,4 @@ const searchPoets = async (q = "") => {
   return Response.Success("Poets retrieved successfully.", { poets: rows });
 };
 
-module.exports = { searchPoems, searchPoets };
+export { searchPoems, searchPoets };

@@ -1,13 +1,13 @@
-const highlightService = require("../services/highlightService");
+import * as highlightService from '../services/highlightService.js'
 
-const listHighlights = async (req, res) => {
+export const listHighlights = async (req, res) => {
   const result = await highlightService.listHighlights(req.query.period || "weekly");
   return res.status(result.status).json(result.body);
 };
 
-const topPoets = async (_req, res) => {
+export const topPoets = async (req, res) => {
   const result = await highlightService.topPoets();
   return res.status(result.status).json(result.body);
 };
 
-module.exports = { listHighlights, topPoets };
+export default { listHighlights, topPoets };

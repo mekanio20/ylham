@@ -111,7 +111,7 @@
           <div class="flex justify-center gap-3">
             <input v-for="(digit, i) in otp" :key="i" :ref="el => { if (el) otpInputs[i] = el }" v-model="otp[i]"
               type="text" inputmode="numeric" maxlength="1" :class="[
-                'w-12 h-14 text-center text-xl text-[#1C1C1E] rounded-lg outline-none transition-all duration-200 font-garamond',
+                'w-12 h-14 text-center text-xl text-[#1C1C1E] rounded-lg outline-none transition-all duration-200 font-dm',
                 otpHasError
                   ? 'bg-[#FFF8F8] border-2 border-[#F5C6C6] focus:border-[#C0392B]'
                   : otp[i]

@@ -136,10 +136,10 @@
                                 <input v-for="(_, i) in otp" :key="i" :ref="el => otpRefs[i] = el" v-model="otp[i]"
                                     type="text" inputmode="numeric" maxlength="1" @input="onOtpInput(i)"
                                     @keydown.backspace="onOtpBackspace(i)" @paste.prevent="onOtpPaste($event)" :class="[
-                                        'w-11 h-12 text-center text-lg font-medium rounded-xl outline-none transition-all font-dm',
+                                        'w-12 h-14 text-center text-xl text-[#1C1C1E] rounded-lg outline-none transition-all duration-200 font-dm',
                                         otp[i]
-                                            ? 'bg-[#1C1C1E] text-[#F5F0E8] border-2 border-[#1C1C1E]'
-                                            : 'bg-[#F0EBE1] text-[#1C1C1E] border-2 border-transparent focus:border-[#A8896C]'
+                                            ? 'bg-[#F0EBE1] border-2 border-[#A8896C]'
+                                            : 'bg-[#F0EBE1] border-2 border-transparent focus:border-[#A8896C]'
                                     ]" />
                             </div>
 
@@ -284,12 +284,6 @@ const startCooldown = () => {
 
 // Step handlers
 const handleSendCode = async () => {
-    const data = JSON.parse(sessionStorage.getItem('temp_reset_data')) || form.value
-    form.value = {
-        email: data.email || '',
-        password: data.new_password || '',
-        confirmPassword: data.new_password_confirm || ''
-    }
     validateEmail()
     validatePassword()
     validateConfirm()
@@ -298,7 +292,11 @@ const handleSendCode = async () => {
     errorMsg.value = ''
     
     try {
-        await authStore.resetPassword({ email: form.value.email, password: form.value.password })
+        const res = await authStore.resetPassword({ email: form.value.email, password: form.value.password })
+        if (res.status !== 200) {
+            errorMsg.value = res.data.msg || 'Ýalňyşlyk ýüze çykdy'
+            return
+        }
         sessionStorage.setItem('temp_reset_data', JSON.stringify({
             email: form.value.email,
             new_password: form.value.password,

@@ -1,11 +1,9 @@
-const { Sequelize } = require("sequelize");
-const { db } = require("./env");
+import Sequelize from 'sequelize'
+import { db } from './env.js'
 
-const sequelize = new Sequelize(db.name, db.user, db.password, {
+export const DB = new Sequelize(db.name, db.user, db.password, {
   host: db.host,
   port: db.port,
   dialect: "postgres",
   logging: false,
 });
-
-module.exports = sequelize;

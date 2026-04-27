@@ -1,6 +1,5 @@
 <template>
   <main class="min-h-screen bg-[#FAFAF7] font-garamond">
-
     <!-- Hero Banner -->
     <div class="bg-[#1C1C1E] text-[#F5F0E8] py-10 px-4 text-center relative overflow-hidden">
       <div class="absolute inset-0 opacity-10"

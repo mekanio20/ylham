@@ -1,13 +1,13 @@
-const categoryService = require("../services/categoryService");
+import * as categoryService from '../services/categoryService.js'
 
-const listCategories = async (_req, res) => {
+export const listCategories = async (req, res) => {
   const result = await categoryService.listCategories();
   return res.status(result.status).json(result.body);
 };
 
-const createCategory = async (req, res) => {
+export const createCategory = async (req, res) => {
   const result = await categoryService.createCategory(req.body?.name);
   return res.status(result.status).json(result.body);
 };
 
-module.exports = { listCategories, createCategory };
+export default { listCategories, createCategory };

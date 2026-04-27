@@ -1,13 +1,13 @@
-const searchService = require("../services/searchService");
+import * as searchService from '../services/searchService.js'
 
-const searchPoems = async (req, res) => {
+export const searchPoems = async (req, res) => {
   const result = await searchService.searchPoems(req.query.q || "");
   return res.status(result.status).json(result.body);
 };
 
-const searchPoets = async (req, res) => {
+export const searchPoets = async (req, res) => {
   const result = await searchService.searchPoets(req.query.q || "");
   return res.status(result.status).json(result.body);
 };
 
-module.exports = { searchPoems, searchPoets };
+export default { searchPoems, searchPoets };

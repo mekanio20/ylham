@@ -1,6 +1,6 @@
-const { literal } = require("sequelize");
-const { Highlight, Poem, User } = require("../models");
-const Response = require("../utils/response");
+import { literal } from "sequelize";
+import { Highlight, Poem, User } from "../models/index.js";
+import Response from "../utils/response.js";
 
 const listHighlights = async (period = "weekly") => {
   const rows = await Highlight.findAll({
@@ -21,4 +21,4 @@ const topPoets = async () => {
   return Response.Success("Top poets retrieved successfully.", { poems: rows })
 };
 
-module.exports = { listHighlights, topPoets };
+export { listHighlights, topPoets };

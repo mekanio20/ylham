@@ -54,4 +54,4 @@ class ResponseService {
         }
     }
 }
-module.exports = new ResponseService()
+export default new ResponseService()

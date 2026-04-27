@@ -1,8 +1,10 @@
-const router = require('express').Router()
-const authController = require("../controllers/authController");
-const authValidators = require("../validators/authValidators");
-const { requireAuth } = require("../middlewares/auth");
-const validate = require("../middlewares/validate");
+import { Router } from 'express';
+import validate from '../middlewares/validate.js';
+import authController from '../controllers/authController.js'
+import authValidators from '../validators/authValidators.js'
+import { requireAuth } from '../middlewares/auth.js'
+
+const router = Router()
 
 router.post("/login/", validate({ body: authValidators.loginBody }), authController.login);
 router.post("/register/", validate({ body: authValidators.registerBody }), authController.register);
@@ -13,4 +15,4 @@ router.get("/profile/me/", requireAuth, authController.me);
 router.patch("/profile/me/", requireAuth, validate({ body: authValidators.updateProfileBody }), authController.updateMe);
 router.get("/poets/", authController.listPoets);
 
-module.exports = router;
+export default router

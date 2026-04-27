@@ -4,11 +4,12 @@
     <!-- Minimal Top Header (back only) -->
     <div class="border-b border-[#EAE5DC] bg-[#FAFAF7] sticky top-0 z-20">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-3.5">
-        <button @click="handlePrev"
+        <button v-if="step < 4" @click="handlePrev"
           class="flex items-center gap-1.5 text-[#9A9A8A] hover:text-[#1C1C1E] transition-colors font-dm text-sm">
           <v-icon size="14" icon="mdi-arrow-left" />
           Yza
         </button>
+        <div v-else></div>
 
         <!-- Step dots -->
         <div class="flex items-center gap-1.5">
@@ -202,13 +203,13 @@
 
           <div class="mb-7">
             <div class="flex items-center justify-between mb-1">
-              <label class="text-xs tracking-widest uppercase text-[#6B6B5A] font-dm">Arka Plan Müziği</label>
+              <label class="text-xs tracking-widest uppercase text-[#6B6B5A] font-dm">Arka Plan Sazy</label>
               <button v-if="form.music" @click="stopAndClear"
                 class="text-xs text-[#9A9A8A] hover:text-[#C0392B] transition-colors flex items-center gap-1 font-dm">
-                <v-icon size="12" icon="mdi-close" /> Kaldır
+                <v-icon size="12" icon="mdi-close" /> Aýyr
               </button>
             </div>
-            <p class="text-xs text-[#9A9A8A] mb-4 font-dm">Okuyucular şiirini okurken bu müzik arka planda çalacak</p>
+            <p class="text-xs text-[#9A9A8A] mb-4 font-dm">Okyjylar goşgyny okaýanda, bu saz arka fonda çalar.</p>
 
             <Transition enter-active-class="transition-all duration-300 ease-out"
               enter-from-class="opacity-0 -translate-y-3 scale-[0.98]"
@@ -228,16 +229,15 @@
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-sm text-[#F5F0E8] font-medium truncate mb-0.5 font-dm">{{ currentTrack.name }}</p>
-                    <p class="text-xs mb-2"
-                      :style="`color: ${currentTrack.accentColor}; font-family: 'DM Sans', sans-serif;`">{{
-                        currentTrack.mood }} · {{ currentTrack.duration }}</p>
+                    <p class="text-xs mb-2 font-dm"
+                      :style="`color: ${currentTrack.accentColor}`">{{
+                        currentTrack.mood }}</p>
                     <div class="h-1.5 bg-[#3A3A3C] rounded-full overflow-hidden cursor-pointer" @click="seekProgress">
                       <div class="h-full rounded-full transition-none"
                         :style="`width: ${playProgress}%; background: ${currentTrack.accentColor}`"></div>
                     </div>
                     <div class="flex justify-between mt-1">
                       <span class="text-[#4A4A4C] font-dm text-[9px]">{{ formatTime(currentTime) }}</span>
-                      <span class="text-[#4A4A4C] font-dm text-[9px]">{{ currentTrack.duration }}</span>
                     </div>
                   </div>
                   <button @click="togglePlay" :class="['w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0',
@@ -259,13 +259,13 @@
                   <v-icon size="18" icon="mdi-music-off" :class="!form.music ? 'text-[#F5F0E8]' : 'text-[#9A9A8A]'" />
                 </div>
                 <span class="text-center leading-tight font-dm text-[11px]"
-                  :class="!form.music ? 'text-[#1C1C1E] font-semibold' : 'text-[#9A9A8A]'">Müziksiz</span>
+                  :class="!form.music ? 'text-[#1C1C1E] font-semibold' : 'text-[#9A9A8A]'">Sessiz</span>
               </button>
 
               <button v-for="track in musicTracks" :key="track.id" @click="selectTrack(track)"
                 :class="['relative flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl border-2 transition-all duration-200 group overflow-hidden',
                   form.music === track.id ? 'border-2' : 'border-[#E0D9CE] hover:border-opacity-60 hover:bg-[#FAFAF7]']" :style="form.music === track.id
-                    ? `border-color: ${track.accentColor}; box-shadow: 0 0 0 3px ${track.accentColor}18; background: ${track.accentColor}08`
+                    ? `border-color: ${track.accentColor}; box-shadow: 0 0 0 2px ${track.accentColor}18; background: ${track.accentColor}08`
                     : ''">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-all relative"
                   :style="`background: ${track.accentColor}${form.music === track.id ? '25' : '15'}`">
@@ -363,7 +363,7 @@
           </div>
 
           <div v-if="form.note" class="bg-[#F0EBE1] rounded-xl p-5 mb-8 mt-6">
-            <p class="text-xs tracking-widest uppercase text-[#A8896C] mb-1.5 font-dm">Şair Notu</p>
+            <p class="text-xs tracking-widest uppercase text-[#A8896C] mb-1.5 font-dm">Şahyr Belligi</p>
             <p class="text-[#5A5040] leading-relaxed font-garamond italic">{{ form.note }}</p>
           </div>
 
@@ -375,11 +375,11 @@
       </div>
 
       <!-- ───── STEP 4: Success ───── -->
-      <div v-if="step === 4">
+      <div v-if="step === 4" class="mt-36">
         <div class="max-w-xl mx-auto text-center">
           <!-- Success Animation Circle -->
           <div class="mb-8 flex justify-center">
-            <div class="relative w-32 h-32">
+            <div class="relative w-28 h-28">
               <!-- Animated Circle -->
               <div
                 class="absolute inset-0 rounded-full bg-gradient-to-br from-[#A8896C] to-[#C8B99A] opacity-10 animate-pulse">
@@ -391,20 +391,20 @@
               <!-- Icon Container -->
               <div class="absolute inset-0 flex items-center justify-center">
                 <div
-                  class="w-20 h-20 rounded-full bg-gradient-to-br from-[#A8896C] to-[#C8B99A] flex items-center justify-center shadow-lg">
-                  <v-icon size="40" icon="mdi-check" class="text-white" />
+                  class="w-16 h-16 rounded-full bg-gradient-to-br from-[#A8896C] to-[#C8B99A] flex items-center justify-center shadow-lg">
+                  <v-icon size="20" icon="mdi-check" class="text-white" />
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Success Title -->
-          <h2 class="text-3xl md:text-4xl text-[#1C1C1E] font-garamond font-medium mb-4">
+          <h2 class="sm:text-3xl text-2xl text-[#1C1C1E] font-garamond font-medium mb-4">
             Goşgyňyz Ugradyldy!
           </h2>
 
           <!-- Success Message -->
-          <p class="text-[#6B6B5A] text-base leading-relaxed mb-8 max-w-md mx-auto font-dm">
+          <p class="text-[#6B6B5A] sm:text-base text-sm leading-relaxed mb-8 max-w-md mx-auto font-dm">
             Goşgyňyz üstünlikli ugradyldy we admin tarapyndan barlag edilýär. Tassyklanansoň, goşgyňyz görkeziler.
           </p>
 
@@ -498,6 +498,7 @@
 </template>
 
 <script setup>
+import { formatTime } from '@/composables/useFormat'
 const router = useRouter()
 const poemStore = usePoemStore()
 
@@ -505,9 +506,9 @@ const showNote = ref(true)
 const draftSaved = ref(false)
 const tagInput = ref('')
 const errorMsg = ref('')
-const step = ref(Number(sessionStorage.getItem('poem_create_step') || 1))
+const step = ref(Number(sessionStorage.getItem('poem_create_step') || 4))
 
-const form = ref({
+const form = reactive({
   title: '',
   body: '',
   note: '',
@@ -531,79 +532,246 @@ const coverImages = [
   { id: 'dark', label: 'Garaňky', mood: 'Ýalňyzlyk', url: '/poem_images/dark.webp' },
 ]
 
+const musicTracks = reactive([
+  {
+    id: 'Beethoven_Moonlight_Sonata',
+    name: 'Aý Şöhlesi',
+    mood: 'Gamgyn',
+    icon: 'mdi-weather-night',
+    accentColor: '#7B6FD4'
+  },
+  {
+    id: 'Canon_in_D_Pachelbel',
+    name: 'Söýgi Sazy',
+    mood: 'Romantik',
+    icon: 'mdi-heart-outline',
+    accentColor: '#A8896C'
+  },
+  {
+    id: 'Comptine_dun_autre_été_laprès_midi',
+    name: 'Tomus Ýatlamasy',
+    mood: 'Nostalgiýa',
+    icon: 'mdi-leaf',
+    accentColor: '#3498DB'
+  },
+  {
+    id: 'Debussy_Clair_de_Lune',
+    name: 'Aýyň Dymyşlygy',
+    mood: 'Parahat',
+    icon: 'mdi-moon-waning-crescent',
+    accentColor: '#27AE60'
+  },
+  {
+    id: 'Erik_Satie_Gnossienne_No.1',
+    name: 'Ýalňyz Ädimler',
+    mood: 'Duýguly',
+    icon: 'mdi-walk',
+    accentColor: '#C0392B'
+  },
+  {
+    id: 'Evgeny_Grinko_Jane_Maryam',
+    name: 'Şemalyň Hekaýasy',
+    mood: 'Şahyrana',
+    icon: 'mdi-weather-windy',
+    accentColor: '#8E44AD'
+  },
+  {
+    id: 'Evgeny_Grinko_Lullaby_for_Erik',
+    name: 'Gije Hüwdüsi',
+    mood: 'Ýuwaş',
+    icon: 'mdi-sleep',
+    accentColor: '#D35400'
+  },
+  {
+    id: 'Evgeny_Grinko_Valse',
+    name: 'Sessiz Tans',
+    mood: 'Näzik',
+    icon: 'mdi-dance-ballroom',
+    accentColor: '#5D6D7E'
+  },
+  {
+    id: 'Gibran_Alcocer_Idea_10',
+    name: 'Pikir No:10',
+    mood: 'Çuň',
+    icon: 'mdi-brain',
+    accentColor: '#6D4C41'
+  },
+  {
+    id: 'Gibran_Alcoser_Idea_22',
+    name: 'Pikir No:22',
+    mood: 'Çynlakaý',
+    icon: 'mdi-lightbulb-outline',
+    accentColor: '#795548'
+  },
+  {
+    id: 'Hijo_de_la_Luna_Mecano_Alexander_Motovilov',
+    name: 'Aýyň Perzendi',
+    mood: 'Rowaýaty',
+    icon: 'mdi-weather-night',
+    accentColor: '#34495E'
+  },
+  {
+    id: 'Jamie_Duffy_Solas',
+    name: 'Yşyk',
+    mood: 'Umytly',
+    icon: 'mdi-white-balance-sunny',
+    accentColor: '#F39C12'
+  },
+  {
+    id: 'Passacaglia_George_Frideric_Handel_Alexander_Motovilov',
+    name: 'Asyllylyk',
+    mood: 'Beýik',
+    icon: 'mdi-chess-queen',
+    accentColor: '#2C3E50'
+  },
+  {
+    id: 'Rovshen_Nepesov_Rainy_day_2020',
+    name: 'Ýagyşly Gün',
+    mood: 'Gamgyn',
+    icon: 'mdi-weather-rainy',
+    accentColor: '#5C6BC0'
+  }
+])
+
 const isPlaying = ref(false)
 const playProgress = ref(0)
 const currentTime = ref(0)
-let progressTimer = null
+const duration = ref(0)
 
-const musicTracks = [
-  { id: 'rain', name: 'Yağmur', mood: 'Hüzünlü', duration: '3:24', icon: 'mdi-weather-rainy', accentColor: '#7B6FD4' },
-  { id: 'piano', name: 'Piyano', mood: 'Melankolik', duration: '4:10', icon: 'mdi-piano', accentColor: '#A8896C' },
-  { id: 'ocean', name: 'Deniz', mood: 'Dingin', duration: '5:02', icon: 'mdi-waves', accentColor: '#2980B9' },
-  { id: 'forest', name: 'Orman', mood: 'Huzurlu', duration: '6:15', icon: 'mdi-tree-outline', accentColor: '#27AE60' },
-  { id: 'strings', name: 'Yaylılar', mood: 'Duygusal', duration: '3:48', icon: 'mdi-violin', accentColor: '#C0392B' },
-  { id: 'wind', name: 'Rüzgâr', mood: 'Şiirsel', duration: '4:33', icon: 'mdi-weather-windy', accentColor: '#8E44AD' },
-  { id: 'cafe', name: 'Kafe', mood: 'Sıcak', duration: '7:20', icon: 'mdi-coffee-outline', accentColor: '#D35400' },
-  { id: 'midnight', name: 'Gece Yarısı', mood: 'Gizemli', duration: '5:44', icon: 'mdi-weather-night', accentColor: '#5D6D7E' },
-  { id: 'cello', name: 'Çello', mood: 'Derin', duration: '4:57', icon: 'mdi-music-clef-bass', accentColor: '#6D4C41' },
-]
+const audio = new Audio()
+audio.preload = 'metadata'
+audio.volume = 0.7
+audio.loop = true
 
-const currentTrack = computed(() => musicTracks.find(t => t.id === form.value.music) || null)
+const currentTrack = computed(() => {
+  return musicTracks.find(track => track.id === form.music) || null
+})
 
-const selectTrack = (track) => {
-  form.value.music = track.id
-  playProgress.value = 0
-  currentTime.value = 0
-  isPlaying.value = true
-  startProgress()
+const timeToSeconds = (time) => {
+  if (!time) return 0
+
+  const [min, sec] = time.split(':').map(Number)
+  return (min * 60) + sec
+}
+
+const updateProgress = () => {
+  currentTime.value = audio.currentTime || 0
+
+  if (audio.duration) {
+    duration.value = audio.duration
+    playProgress.value =
+      (audio.currentTime / audio.duration) * 100
+  }
+}
+
+const selectTrack = async (track) => {
+  try {
+    if (form.music === track.id) {
+      togglePlay()
+      return
+    }
+
+    form.music = track.id
+
+    audio.pause()
+    audio.src = `/poetry_musics/${track.id}.m4a`
+    audio.currentTime = 0
+
+    currentTime.value = 0
+    playProgress.value = 0
+    duration.value = timeToSeconds(track.duration)
+
+    await audio.play()
+    isPlaying.value = true
+
+  } catch (error) {
+    console.error('Audio play error:', error)
+    isPlaying.value = false
+  }
 }
 
 const stopAndClear = () => {
-  form.value.music = null
+  audio.pause()
+  audio.currentTime = 0
+  audio.src = ''
+
+  form.music = null
   isPlaying.value = false
   playProgress.value = 0
   currentTime.value = 0
-  clearInterval(progressTimer)
+  duration.value = 0
 }
 
-const togglePlay = () => {
-  isPlaying.value = !isPlaying.value
-  isPlaying.value ? startProgress() : clearInterval(progressTimer)
-}
+const togglePlay = async () => {
+  if (!form.music) return
 
-const startProgress = () => {
-  clearInterval(progressTimer)
-  progressTimer = setInterval(() => {
-    if (playProgress.value >= 100) {
-      playProgress.value = 0
-      currentTime.value = 0
+  try {
+    if (isPlaying.value) {
+      audio.pause()
+      isPlaying.value = false
     } else {
-      playProgress.value += 0.12
-      currentTime.value += 0.072
+      await audio.play()
+      isPlaying.value = true
     }
-  }, 72)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-const seekProgress = (e) => {
-  const rect = e.currentTarget.getBoundingClientRect()
-  const pct = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100))
-  playProgress.value = pct
-  currentTime.value = (pct / 100) * 240
+const seekProgress = (event) => {
+  if (!audio.duration) return
+
+  const rect = event.currentTarget.getBoundingClientRect()
+
+  const percent =
+    ((event.clientX - rect.left) / rect.width) * 100
+
+  const safePercent = Math.min(100, Math.max(0, percent))
+
+  audio.currentTime =
+    (safePercent / 100) * audio.duration
 }
 
-const formatTime = (secs) => {
-  const m = Math.floor(secs / 60)
-  const s = Math.floor(secs % 60)
-  return `${m}:${s.toString().padStart(2, '0')}`
+audio.addEventListener('timeupdate', updateProgress)
+
+audio.addEventListener('loadedmetadata', () => {
+  duration.value = audio.duration
+})
+
+audio.addEventListener('pause', () => {
+  isPlaying.value = false
+})
+
+audio.addEventListener('play', () => {
+  isPlaying.value = true
+})
+
+const loadTrackDurations = async () => {
+  for (const track of musicTracks) {
+    const audio = new Audio(`/poetry_musics/${track.id}.m4a`)
+
+    audio.addEventListener('loadedmetadata', () => {
+      track.duration = formatTime(audio.duration)
+    })
+
+    audio.addEventListener('error', () => {
+      track.duration = '0:00'
+    })
+  }
 }
 
-onUnmounted(() => clearInterval(progressTimer))
+onUnmounted(() => {
+  audio.pause()
+  audio.src = ''
+  loadTrackDurations()
+  audio.removeEventListener('timeupdate', updateProgress)
+})
 
 const placeholderText = `Şygyr sözlerini şu ýere ýaz...
 Boş setir taşlap goşgyny bentlere aýyryp bilýäň.`
 
-const lineCount = computed(() => form.value.body.split('\n').filter(l => l.trim()).length)
-const wordCount = computed(() => form.value.body.trim() ? form.value.body.trim().split(/\s+/).length : 0)
+const lineCount = computed(() => form.body.split('\n').filter(l => l.trim()).length)
+const wordCount = computed(() => form.body.trim() ? form.body.trim().split(/\s+/).length : 0)
 const readTimeFormatted = computed(() => {
   const wordsPerSecond = 20 / 10;
   const totalSeconds = Math.max(1, Math.ceil(wordCount.value / wordsPerSecond));
@@ -617,11 +785,11 @@ const readTimeFormatted = computed(() => {
 
   return `${minutes} minut ${seconds} sekuntda`;
 });
-const previewLines = computed(() => form.value.body.split('\n').filter(l => l.trim()).slice(0, 4))
+const previewLines = computed(() => form.body.split('\n').filter(l => l.trim()).slice(0, 4))
 
 const canProceed = computed(() => {
-  if (step.value === 1) return form.value.title.trim().length > 0 && form.value.body.trim().length > 0
-  if (step.value === 2) return form.value.category !== ''
+  if (step.value === 1) return form.title.trim().length > 0 && form.body.trim().length > 0
+  if (step.value === 2) return form.category !== ''
   return true
 })
 
@@ -636,28 +804,28 @@ const nextStep = () => {
   if (canProceed.value && step.value < 3) {
     step.value++;
     sessionStorage.setItem('poem_create_step', step.value)
-    sessionStorage.setItem('temp_form', JSON.stringify(form.value))
+    sessionStorage.setItem('temp_form', JSON.stringify(form))
   }
 }
 const addTag = () => {
   const tag = tagInput.value.trim().replace(/^#/, '').toLowerCase()
-  if (tag && !form.value.tags.includes(tag) && form.value.tags.length < 5) form.value.tags.push(tag)
+  if (tag && !form.tags.includes(tag) && form.tags.length < 5) form.tags.push(tag)
   tagInput.value = ''
 }
-const removeTag = (i) => form.value.tags.splice(i, 1)
+const removeTag = (i) => form.tags.splice(i, 1)
 const saveDraft = async () => {
   try {
     const poemData = {
-      title: form.value.title,
-      content: form.value.body,
-      category_id: Number(form.value.category) || null,
-      tags: form.value.tags,
-      background_image: form.value.coverImage?.id || 'none',
-      background_music: form.value.music || 'none',
-      public_status: form.value.visibility,
-      poem_note: form.value.note,
-      comment_permission: form.value.allowComments,
-      is_draft: true
+      title: form.title,
+      content: form.body,
+      tags: form.tags,
+      categoryId: Number(form.category) || null,
+      backgroundImage: form.coverImage?.id || 'none',
+      backgroundMusic: form.music || 'none',
+      visibility: form.visibility,
+      poemNote: form.note,
+      commentPermission: form.allowComments,
+      isDraft: true
     };
     const response = await poemStore.createPoem(poemData)
     if (response === true) {
@@ -668,12 +836,7 @@ const saveDraft = async () => {
         window.location.reload()
       }, 2000)
     } else {
-      if (response.data?.title) {
-        errorMsg.value = 'Goşgynyň ady azyndan 2 harp bolmaly'
-      }
-      if (response.data?.content) {
-        errorMsg.value = 'Goşgy azyndan 20 harp bolmaly'
-      }
+      errorMsg.value = response.data.msg
       setTimeout(() => {
         errorMsg.value = ''
       }, 2000);
@@ -684,16 +847,16 @@ const saveDraft = async () => {
 }
 const publishPoem = async () => {
   const poemData = {
-    title: form.value.title,
-    content: form.value.body,
-    category_id: Number(form.value.category) || null,
-    tags: form.value.tags,
-    background_image: form.value.coverImage?.id || 'none',
-    background_music: form.value.music || 'none',
-    public_status: form.value.visibility,
-    poem_note: form.value.note,
-    comment_permission: form.value.allowComments,
-    is_draft: false
+    title: form.title,
+    content: form.body,
+    tags: form.tags,
+    categoryId: Number(form.category) || null,
+    backgroundImage: form.coverImage?.id || 'none',
+    backgroundMusic: form.music || 'none',
+    visibility: form.visibility,
+    poemNote: form.note,
+    commentPermission: form.allowComments,
+    isDraft: false
   };
   try {
     const response = await poemStore.createPoem(poemData)
@@ -710,7 +873,7 @@ const publishPoem = async () => {
 const createNewPoem = () => {
   // Clear form and session
   sessionStorage.clear()
-  form.value = {
+  form = {
     title: '',
     body: '',
     note: '',
@@ -738,7 +901,10 @@ const handlePrev = () => {
 
 onMounted(() => {
   const temp_form = JSON.parse(sessionStorage.getItem('temp_form'))
-  if (temp_form) form.value = temp_form
+
+  if (temp_form) {
+    Object.assign(form, temp_form)
+  }
 })
 </script>
 

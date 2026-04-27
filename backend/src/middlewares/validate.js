@@ -40,4 +40,4 @@ const validate = ({ body, query, params }) => (req, res, next) => {
   return next();
 };
 
-module.exports = validate;
+export default validate

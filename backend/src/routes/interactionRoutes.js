@@ -1,8 +1,10 @@
-const router = require("express").Router();
-const interactionController = require("../controllers/interactionController");
-const { requireAuth, requireNotBanned } = require("../middlewares/auth");
-const validate = require("../middlewares/validate");
-const interactionValidators = require("../validators/interactionValidators");
+import { Router } from 'express';
+import validate from '../middlewares/validate.js';
+import interactionController from '../controllers/interactionController.js'
+import interactionValidators from '../validators/interactionValidators.js'
+import { requireAuth, requireNotBanned } from '../middlewares/auth.js';
+
+const router = Router()
 
 router.post(
   "/poems/:poemId/like",
@@ -34,4 +36,4 @@ router.post(
   interactionController.toggleCommentLike,
 );
 
-module.exports = router;
+export default router
